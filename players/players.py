@@ -108,6 +108,6 @@ class playerDB:
 if __name__ == "__main__":     
     database = playerDB()
     database.connect()
-    database.createTable()
+    database.createTable() # only needs to be run the first time creating the table
     print(database.dbName)
     database.scrapeAllPlayers()
