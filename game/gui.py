@@ -6,20 +6,23 @@ import game.inputNormalization as norm
 class GameWindow(tk.Tk):
     def __init__(self):
         super().__init__()
+        # Create the tkinter window
         self.title("NBA Grid Game Guesser")
         self.buttons = []
         self.geometry('750x400')
 
+        # Used to keep track of the row and column that the user has chosen
         self.chosenRow = None
         self.chosenCol = None
 
-
+        # Initialize the autocomplete search box
         self.search_var = tk.StringVar()
         self.search_var.trace("w", self.autocomplete)
 
         self.entry = tk.Entry(self, state=tk.DISABLED,textvariable=self.search_var)
         self.entry.grid(row=1, column=4, padx=5, pady=5)
 
+        # Initialize the enter button, should be disabled until a user choses a box (row/column pair)
         self.enterButton = tk.Button(self, text="Enter", command=self.makeGuess, state=tk.DISABLED)
         self.enterButton.grid(row=1, column=5, padx=5, pady=5)
 
@@ -29,13 +32,16 @@ class GameWindow(tk.Tk):
         self.autocompleteListbox.bind("<<ListboxSelect>>", self.onAutocompleteSelect)
         self.autocompleteListbox.grid_forget()  # Initially hide the listbox
 
+        # Create instance of the game logic
         self.game = gameLogic.Game()
 
-        
+        # Generate the teams that will be on the rows and columns of the game
         self.teamRowList , self.teamColList = self.game.gameStart()
 
+        # Initialize the window based on the teams that have been randomly selected
         self.setupGameWindow()
 
+        # Set the players lives and score
         self.lives = 3
         self.score = 0
 
@@ -45,15 +51,17 @@ class GameWindow(tk.Tk):
         '''
         Create buttons and configure the game window
         '''
-        for col in range(3):
+
+        for col in range(3): # Populate the columns with the teams
             label = tk.Label(self, text=norm.convertCodeToFull(self.teamColList[col]))
             label.grid(row=1, column=col+1, padx=5, pady=5)
 
-        for row in range(3):
+        for row in range(3): # Populate the rows with the teams
             label = tk.Label(self, text=norm.convertCodeToFull(self.teamRowList[row]))
             label.grid(row=row+2, column=0, padx=5, pady=5)
 
             rowButtons = []
+            # Create and place all the player buttons on the window
             for col in range(3):
                 button = tk.Button(self, text=" ", width=10, height=5,
                                    command=lambda r=row, c=col: self.buttonClick(r, c))
@@ -69,14 +77,14 @@ class GameWindow(tk.Tk):
         self.entry.config(state=tk.NORMAL)  # Enable the entry box
         self.entry.delete(0, tk.END)  # Clear any previous text
         self.entry.focus()  # Set focus to the entry box
-        self.chosenRow = row
+        self.chosenRow = row # Update the row and column of the chosen button
         self.chosenCol = col
-        print(self.chosenRow)
-        print(self.chosenCol)
+        # print(self.chosenRow)
+        # print(self.chosenCol)
         
         self.enterButton.config(state=tk.NORMAL)  # Enable the enter button
         self.autocompleteListbox.grid(row=2, column=4, padx=5, pady=5, rowspan=3)
-        self.autocompleteListbox.delete(0,tk.END)
+        self.autocompleteListbox.delete(0,tk.END) # Clear the autocomplete suggestions
 
 
     def makeGuess(self):

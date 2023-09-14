@@ -34,7 +34,7 @@ class Game():
     
     def gameStart(self):
         '''
-        Start a new game
+        Start a new game, randomly select the teams to populate the rows and columns of the game
         '''
 
         rows = []
